@@ -1,0 +1,42 @@
+name: themenintegration-lab
+services:
+  edit-db:
+    image: postgis/postgis:18-3.6@sha256:60f6ad1d21ea86a67d47780b9a0d1e1d200500f62b19293fa834d0dea80b8677
+    platform: linux/amd64
+    environment:
+      POSTGRES_DB: edit
+      POSTGRES_USER: netl
+      POSTGRES_PASSWORD: netl-local
+    ports: ["127.0.0.1:55431:5432"]
+    volumes: ["edit-data:/var/lib/postgresql"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U netl -d edit"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+  pub-db:
+    image: postgis/postgis:18-3.6@sha256:60f6ad1d21ea86a67d47780b9a0d1e1d200500f62b19293fa834d0dea80b8677
+    platform: linux/amd64
+    environment:
+      POSTGRES_DB: pub
+      POSTGRES_USER: netl
+      POSTGRES_PASSWORD: netl-local
+    ports: ["127.0.0.1:55432:5432"]
+    volumes: ["pub-data:/var/lib/postgresql"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U netl -d pub"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+  gretl:
+    image: sogis/gretl:3.2.861@sha256:5e1e2b89995d11d8317bf114c7ce9d74351c1167df59eee664376b825ff7ddea
+    entrypoint: ["sleep", "infinity"]
+    init: true
+    volumes:
+      - ./.netl:/workspace
+    depends_on:
+      edit-db: {condition: service_healthy}
+      pub-db: {condition: service_healthy}
+volumes:
+  edit-data:
+  pub-data:

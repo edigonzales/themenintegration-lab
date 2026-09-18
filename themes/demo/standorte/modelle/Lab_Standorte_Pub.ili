@@ -1,0 +1,15 @@
+INTERLIS 2.3;
+MODEL Lab_Standorte_Pub (de) AT "https://example.invalid/lab" VERSION "2026-09-17" =
+  TOPIC Standorte =
+    DOMAIN
+      Punkt = COORD 2480000.000 .. 2840000.000, 1070000.000 .. 1300000.000,
+        ROTATION 2 -> 1;
+    CLASS Standort =
+      Kennung : MANDATORY TEXT*40;
+      Name : MANDATORY TEXT*100;
+      Organisation : MANDATORY TEXT*100;
+      Geometrie : MANDATORY Punkt;
+      UNIQUE Kennung;
+    END Standort;
+  END Standorte;
+END Lab_Standorte_Pub.

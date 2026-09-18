@@ -1,0 +1,31 @@
+{
+  "formatVersion": 1,
+  "schemas": [
+    {
+      "ident": "edit",
+      "name": "demo_standorte_edit_v1",
+      "database": "edit",
+      "models": [
+        "Lab_Standorte_Edit"
+      ],
+      "modelFiles": [
+        "modelle/Lab_Standorte_Edit.ili"
+      ],
+      "profile": "lab-edit-v1",
+      "overrides": {}
+    },
+    {
+      "ident": "pub",
+      "name": "demo_standorte_pub_v1",
+      "database": "pub",
+      "models": [
+        "Lab_Standorte_Pub"
+      ],
+      "modelFiles": [
+        "modelle/Lab_Standorte_Pub.ili"
+      ],
+      "profile": "lab-pub-v1",
+      "overrides": {}
+    }
+  ]
+}
