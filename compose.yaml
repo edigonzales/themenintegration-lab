@@ -29,7 +29,7 @@ services:
       timeout: 5s
       retries: 30
   gretl:
-    image: netl/gretl:0.2.0
+    image: netl/gretl:0.3.0
     build:
       context: ../netl-mcp
       dockerfile: runtime/Dockerfile

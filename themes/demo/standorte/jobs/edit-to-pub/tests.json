@@ -1,0 +1,13 @@
+{
+  "formatVersion": 1,
+  "requirements": "Drei synthetische Standorte unverändert publizieren: N1 Depot und N2 Büro gehören zu Werk Nord; S1 Lager gehört zu Werk Süd. Kennung, Bezeichnung, Organisationsname und LV95-Punkt müssen exakt stimmen. Keine zusätzlichen Standorte, keine Duplikate beim erneuten Lauf. Vor fachlicher Abnahme ausdrücklich bestätigen.",
+  "fixtures": ["fixtures/standorte.sql"],
+  "assertions": [{
+    "id": "expected_standorte",
+    "description": "Exakt drei erwartete Standorte mit richtiger Organisation und unveränderter Geometrie",
+    "origin": "Benutzerbestätigung der vorgeschlagenen Demo-Erwartungen erforderlich",
+    "scope": "fixture",
+    "sql": "assertions/expected.sql",
+    "expected": "zero_violations"
+  }]
+}

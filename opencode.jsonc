@@ -6,7 +6,7 @@
       "type": "local",
       "command": ["../netl-mcp/bin/netl", "--workspace", ".", "mcp"],
       "enabled": true,
-      "timeout": 180000
+      "timeout": 600000
     }
   }
 }

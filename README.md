@@ -233,7 +233,7 @@ Bei Änderungen wird nichts automatisch gelöscht, migriert oder repariert. Ein 
 - Synthetische DML-Benutzer: `netl_reader` / `netl-reader-local` und `netl_writer` / `netl-writer-local`.
   Das Bootstrap-SQL legt fehlende Benutzer an und verändert keine bestehenden Rollen oder Schemas.
 - Keine benutzerweite Properties-Datei; keine Remote-DB-Parameter in CLI oder MCP.
-- PostGIS und GRETL-Basisimage sind per Digest festgehalten. Das abgeleitete `netl/gretl:0.2.0`
+- PostGIS und GRETL-Basisimage sind per Digest festgehalten. Das abgeleitete `netl/gretl:0.3.0`
   wird lokal gebaut; NETL prüft die eingebetteten Runner-Dateien per SHA-256 gegen das JAR.
 - GRETL `3.2.861`, ili2pg `5.5.1`, ili2c `5.6.8`, PostGIS-Image `18-3.6`.
 - Der getestete Image-Stand enthält PostgreSQL `18.6` und PostGIS `3.6.4`.
@@ -298,3 +298,8 @@ docker compose up -d --wait
 
 Logs unter `.netl/runs/` bleiben zur Diagnose erhalten. Nach einem kompletten Reset sind die Demo-Schemas
 wieder `MISSING`. Ein isoliertes Löschen der Zustandsdateien bei weiterhin vorhandenen Schemas ergibt `UNMANAGED`.
+## GRETL-Datenumbaujobs
+
+Der persistente NETL-Runner unterstützt nun auch LLM-generierte `build.gradle`- und SQL-Dateien,
+isolierte synthetische Testdaten und unabhängige Assertions. Anleitung und Grenzen:
+[Datenumbaujobs](docs/jobs.md).

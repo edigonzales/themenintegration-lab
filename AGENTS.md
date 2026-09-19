@@ -2,6 +2,7 @@
 
 Dieses Repository erprobt lokale Themenintegration mit synthetischen INTERLIS-Modellen.
 Die Implementierung der Schema-Werkzeuge liegt im benachbarten `netl-mcp`-Repository.
+Die Job-Werkzeuge liegen ebenfalls dort; Ablauf und Artefaktvertrag stehen in `docs/jobs.md`.
 
 ## Fachliche Regeln
 
@@ -26,6 +27,16 @@ Versionswechsel erstellen neue Schemas daneben; weder Datenmigration noch Vorgä
 Die vorbereitende Rolle ist in `.opencode/agents/themenkonfigurator.md` definiert.
 Sie liest Modelle und speichert ausschliesslich validierte Themenkonfiguration über die NETL-Werkzeuge.
 Sie verändert weder Modelle noch Profile oder Datenbanken.
+
+## Delegierte Job-Rollen
+
+Der Themenintegrator darf ausschliesslich `job-autor` und `job-pruefer` delegieren.
+Der Autor schreibt build.gradle und SQL über job_write_transform; der Prüfer schreibt
+synthetische Fixtures und Assertions über job_write_test. Keine allgemeinen Schreib-/Shellrechte.
+Erwartungen erfordern ausdrückliche Benutzerbestätigung, niemals Selbstbestätigung durch einen Agenten.
+Maximal drei geänderte isolierte Testversuche; bei Timeout/BUSY stoppen. Lokale Zielläufe
+brauchen einen zusätzlichen ausdrücklichen Auftrag und einen einmaligen Plan-Token.
+Ein fehlgeschlagener Post-Commit-Assert rollt Pub-Daten nicht zurück.
 
 ## Entwicklung
 
