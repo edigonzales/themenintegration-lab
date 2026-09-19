@@ -29,14 +29,19 @@ services:
       timeout: 5s
       retries: 30
   gretl:
-    image: sogis/gretl:3.2.861@sha256:5e1e2b89995d11d8317bf114c7ce9d74351c1167df59eee664376b825ff7ddea
+    image: netl/gretl:0.2.0
+    build:
+      context: ../netl-mcp
+      dockerfile: runtime/Dockerfile
     entrypoint: ["sleep", "infinity"]
     init: true
     volumes:
       - ./.netl:/workspace
+      - gradle-cache:/home/gradle/.gradle
     depends_on:
       edit-db: {condition: service_healthy}
       pub-db: {condition: service_healthy}
 volumes:
   edit-data:
   pub-data:
+  gradle-cache:

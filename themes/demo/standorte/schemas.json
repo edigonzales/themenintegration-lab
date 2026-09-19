@@ -1,9 +1,11 @@
 {
-  "formatVersion": 1,
+  "formatVersion": 2,
   "schemas": [
     {
       "ident": "edit",
-      "name": "demo_standorte_edit_v1",
+      "baseName": "demo_standorte_edit",
+      "schemaVersion": 1,
+      "sqlFiles": {"grants": "grants.sql"},
       "database": "edit",
       "models": [
         "Lab_Standorte_Edit"
@@ -16,7 +18,9 @@
     },
     {
       "ident": "pub",
-      "name": "demo_standorte_pub_v1",
+      "baseName": "demo_standorte_pub",
+      "schemaVersion": 1,
+      "sqlFiles": {"grants": "grants.sql"},
       "database": "pub",
       "models": [
         "Lab_Standorte_Pub"

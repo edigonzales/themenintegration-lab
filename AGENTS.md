@@ -14,7 +14,18 @@ Die Implementierung der Schema-Werkzeuge liegt im benachbarten `netl-mcp`-Reposi
 ## Rolle themenintegrator
 
 Die eingeschränkte Laufzeitrolle ist in `.opencode/agents/themenintegrator.md` definiert.
-Sie liest und orchestriert; Änderungen an Code, Modellen oder Konfiguration sind Entwicklungsarbeit ausserhalb dieser Rolle.
+Sie liest und orchestriert; Änderungen an Code, Modellen oder Konfiguration erfolgen ausserhalb dieser Rolle.
+Ein expliziter Neuaufbauauftrag erlaubt das werkzeuggestützte Löschen und Neuerstellen eines verwalteten
+lokalen Schemas. Gewöhnliche Erstellungs- oder Konfigurationsaufträge erlauben dies nicht.
+Ein ausdrücklicher Löschauftrag für die Vorgängerversion erlaubt ausschliesslich den tokengebundenen
+`drop-previous`-Ablauf für Version n-1 und deren nachweislich verwaltete Rollen.
+Versionswechsel erstellen neue Schemas daneben; weder Datenmigration noch Vorgängerlöschung erfolgen automatisch.
+
+## Rolle themenkonfigurator
+
+Die vorbereitende Rolle ist in `.opencode/agents/themenkonfigurator.md` definiert.
+Sie liest Modelle und speichert ausschliesslich validierte Themenkonfiguration über die NETL-Werkzeuge.
+Sie verändert weder Modelle noch Profile oder Datenbanken.
 
 ## Entwicklung
 
