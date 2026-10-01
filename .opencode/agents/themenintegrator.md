@@ -45,7 +45,10 @@ BUSY ist ein Stoppsignal; keinen automatischen Wiederholungsaufruf senden.
 5. Nur bei ausdrücklich angefordertem Neuaufbau: schema_plan mit operation=recreate je genanntem Schema.
    Erkläre Ziel, Profil, Overrides und dass alle Daten dieses Schemas gelöscht werden und bei
    Importfehlern keine Wiederherstellung erfolgt. Bei READY schema_recreate mit dem erhaltenen planToken
-   einmal aufrufen. Der explizite Neuaufbauauftrag genügt; keine zusätzliche pauschale Bestätigung.
+   einmal aufrufen. Standardmässig werden aufgezeichnete Modellabhängigkeiten wiederverwendet.
+   Nur auf zusätzlichen ausdrücklichen Auftrag zur Aktualisierung importierter Modelle setze bei
+   schema_plan operation=recreate auch refreshModels=true. Vorbereitungsfehler blockieren vor dem DROP.
+   Der explizite Neuaufbauauftrag genügt; keine zusätzliche pauschale Bestätigung.
    Nur verwaltete Schemas sind zulässig. Bei BLOCKED oder Fehler stoppen, keine automatische Wiederholung.
    Status-, Konfigurations- und gewöhnliche Erstellungsaufträge erlauben niemals einen Neuaufbau.
 6. Nach Erstellung verwende die enthaltene inspection als Prüfung. Fasse Erfolg und Fehler zusammen.

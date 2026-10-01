@@ -51,8 +51,8 @@ opencode
 
 Oder: „Wie ist der Stand der lokalen Schemas für demo/standorte?“ / „Erstelle die noch fehlenden Schemas für demo/standorte.“
 Statusfragen dürfen keine Erstellung auslösen. Ein ausdrücklicher Erstellungsauftrag genügt;
-es gibt keine zusätzliche pauschale Freigabefrage. Der Themenintegrator besitzt nur Lesezugriff und die sechs Schema-Werkzeuge.
-Shell, Dateiänderungen, Subagenten und andere MCP-Werkzeuge sind gesperrt.
+es gibt keine zusätzliche pauschale Freigabefrage. Der Themenintegrator besitzt Lesezugriff und explizit freigegebene Schema-/Job-Werkzeuge.
+Shell und allgemeine Dateiänderungen sind gesperrt; Jobrollen dürfen gezielt delegiert werden.
 
 Die MCP-Konfiguration verwendet `../netl-mcp/bin/netl --workspace . mcp`. STDOUT ist ausschliesslich
 MCP-Protokoll. Eine lokale Installation kann den Startbefehl anpassen, ohne die Agentenrolle zu ändern.
@@ -69,9 +69,10 @@ Die Profile liegen versioniert im `netl-mcp`-JAR. Ihre einzige Abweichung ist `n
 Weitere Defaults stammen aus der festgelegten GRETL-/ili2pg-Version. Dies sind Lab-Profile, keine AGI-Standards.
 Die JSON Schemas liegen in `netl-mcp/src/main/resources/schemas-v1.schema.json` und `schemas-v2.schema.json`.
 
-Modelldateien werden für jeden Lauf kopiert und per SHA-256 dokumentiert. GRETL erhält ausschliesslich
-dieses lokale Modellverzeichnis; es erfolgt keine Suche in entfernten Modellrepositories.
-Modelldateien und alle ihre Abhängigkeiten müssen in `modelFiles` stehen; Basenames müssen eindeutig sein.
+Modelldateien werden für jeden Lauf kopiert und per SHA-256 dokumentiert. Der Schemaimport erhält ausschliesslich
+den vorbereiteten Modellstand. Optional lösen `modelRepositories` im Manifestformat 2 importierte
+Abhängigkeiten vorab auf; ohne diese Option müssen alle Abhängigkeiten lokal in `modelFiles` stehen.
+Eigene Hauptmodelle bleiben im Themenverzeichnis; Basenames müssen eindeutig sein.
 Overrides sind nur für die im Profil aufgelisteten Optionen erlaubt. `defaultSrsCode` ist eine Zeichenkette,
 alle anderen unterstützten Optionen sind boolesch. Unbekannte Optionen werden abgewiesen.
 
@@ -79,7 +80,7 @@ alle anderen unterstützten Optionen sind boolesch. Unbekannte Optionen werden a
 
 Neue Manifeste verwenden `formatVersion: 2`. Jeder Eintrag enthält `ident`, `baseName`, `database`,
 `models`, `modelFiles` und `profile`. Optional sind `schemaVersion` (positive ganze Zahl), `overrides`,
-`schemaComment`, `roleSuffix` und `sqlFiles`. Beispiel:
+`schemaComment`, `roleSuffix`, `modelRepositories` und `sqlFiles`. Beispiel:
 
 ```json
 {
@@ -233,7 +234,7 @@ Bei Änderungen wird nichts automatisch gelöscht, migriert oder repariert. Ein 
 - Synthetische DML-Benutzer: `netl_reader` / `netl-reader-local` und `netl_writer` / `netl-writer-local`.
   Das Bootstrap-SQL legt fehlende Benutzer an und verändert keine bestehenden Rollen oder Schemas.
 - Keine benutzerweite Properties-Datei; keine Remote-DB-Parameter in CLI oder MCP.
-- PostGIS und GRETL-Basisimage sind per Digest festgehalten. Das abgeleitete `netl/gretl:0.3.0`
+- PostGIS und GRETL-Basisimage sind per Digest festgehalten. Das abgeleitete `netl/gretl:0.4.0`
   wird lokal gebaut; NETL prüft die eingebetteten Runner-Dateien per SHA-256 gegen das JAR.
 - GRETL `3.2.861`, ili2pg `5.5.1`, ili2c `5.6.8`, PostGIS-Image `18-3.6`.
 - Der getestete Image-Stand enthält PostgreSQL `18.6` und PostGIS `3.6.4`.
@@ -265,7 +266,7 @@ python3 scripts/mcp_smoke.py ../themenintegration-lab --create
 
 Integrationstests erstellen eindeutig benannte Testschemas und entfernen nur diese wieder.
 Der MCP-Smoke-Test verwendet eigene synthetische Themen und Testschemas; `--create` erlaubt
-deren Erstellung und Neuaufbau ausdrücklich. Er prüft STDIO, parallele Antworten, alle acht Tools,
+deren Erstellung und Neuaufbau ausdrücklich. Er prüft STDIO, parallele Antworten, alle 18 Tools,
 CLI-Parität und Wiederholbarkeit. Ohne `--create` testet er die Konfigurationsspeicherung im eigenen
 Testthema, verändert aber keine Datenbankschemas.
 
@@ -303,3 +304,21 @@ wieder `MISSING`. Ein isoliertes Löschen der Zustandsdateien bei weiterhin vorh
 Der persistente NETL-Runner unterstützt nun auch LLM-generierte `build.gradle`- und SQL-Dateien,
 isolierte synthetische Testdaten und unabhängige Assertions. Anleitung und Grenzen:
 [Datenumbaujobs](docs/jobs.md).
+
+## Hauptmodelle lokal, importierte Modelle extern
+
+Format 2 unterstützt je Schema eine explizite geordnete Liste `modelRepositories`, zum Beispiel
+`["https://geo.so.ch/models/"]`. `modelFiles` braucht dann nur eigene Hauptmodelle und bewusst lokale
+Abhängigkeiten aufzuführen. Konfigurationsprüfung ist weiterhin offline. NETL bereitet transitive
+Abhängigkeiten mit dem gebundenen ili2c vor, kompiliert sie und friert die Dateien ausserhalb von Git
+unter `.netl/model-runs/` ein. Der Import erhält diesen lokalen Modellstand; `t_ili2db_model` wird
+anschliessend als `db-models.json` im Schemalauf archiviert und geprüft.
+
+Neue Ziele lösen Abhängigkeiten neu auf. Neuaufbau verwendet den dokumentierten Stand wieder und
+ergänzt neue Imports. Nur bei zusätzlichem ausdrücklichem Aktualisierungsauftrag wird
+`schema_plan` mit `operation=recreate, refreshModels=true` beziehungsweise CLI `--refresh-models`
+verwendet. Vorbereitung und Kompilierung erfolgen vor dem DROP; das Token bindet exakt diese Dateien.
+Vorbereitungsfehler erhalten das bestehende Schema. Inspection benötigt keinen Repository-Zugriff
+und vergleicht gespeicherte Modellinhalte ohne Importdatum. Änderungen am externen Repository allein
+lösen keinen Drift aus. Jobtests und lokale Freigaben prüfen zusätzlich dieselben Modellstand-Hashes.
+Alte Laufnachweise werden nicht automatisch übernommen oder neu aufgebaut.

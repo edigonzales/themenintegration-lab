@@ -1,6 +1,6 @@
 # Datenumbaujobs
 
-NETL 0.3.0 führt vollständige, vom LLM geschriebene GRETL-Jobs im persistenten Lab-Runner aus.
+NETL 0.4.0 führt vollständige, vom LLM geschriebene GRETL-Jobs im persistenten Lab-Runner aus.
 Ein erfolgreicher Gradle-Prozess, bestandene generische Prüfungen und bestätigte fachliche
 Abnahme sind getrennte Aussagen. Kein Produktionsbetrieb, keine echten Fachdaten.
 
@@ -121,3 +121,13 @@ er bestätigt keine fachlichen Erwartungen anderer Themen. Bestehender Schema-Sm
 `python3 scripts/orchestrator_smoke.py`.
 
 Die Abnahme dieser Implementierung ist in [Abnahmeprotokoll](acceptance-jobs.md) zusammengefasst.
+
+## Modellstände bei externen Abhängigkeiten
+
+Isolierte Schemas erhalten die dokumentierten Abhängigkeiten der konfigurierten Schemas und die
+aktuellen lokalen Hauptmodelle. Für noch nicht erstellte Ziele wird ein eigener Modellstand vorbereitet.
+Die Testnachweise enthalten Quell-/Ziel-Modellstand-Hashes und geprüfte Snapshot-Artefakte. Ein lokaler
+Plan verlangt dieselben Modellstände in den verwalteten Schemas; andernfalls TEST_REQUIRED.
+Tests können daher bei vorhandenen vollständigen Nachweisen ohne Repository-Erreichbarkeit laufen.
+Eine Modellauflösung bestätigt keine fachlichen Erwartungen; deren ausdrückliche Benutzerbestätigung
+und die bisherigen Grenzen für Wiederholungen bleiben bestehen.
